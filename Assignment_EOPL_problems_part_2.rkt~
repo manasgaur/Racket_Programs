@@ -1,0 +1,43 @@
+#lang racket
+; program for binary search tree EOPL 1.17 1
+(define labels '("left" "right"))
+(define root 0)
+(define (path n bst)
+  (if (null? bst) ('())
+      (if (number? bst) (display bst)
+          (if (eq? n (car bst)) 0
+              (if (> n (car bst)) (cons (list-ref labels 1) (path n (caddr bst)))
+                  (cons (list-ref labels 0) (path n (cadr bst))))))))
+
+; program for sorting EOPL 1.17 2 and 3
+(define (remove l e)
+  (cond ( (null? l) '() )
+        ( (= (car l) e) (cdr l))
+        (else (cons (car l) (remove (cdr l) e)))))
+(define (smallest l e)
+  (cond ( (null? l) e)
+        ( (< (car l) e) (smallest (cdr l) (car l)))
+        (else (smallest (cdr l) e))))
+
+(define (greatest l e)
+    (cond ( (null? l) e)
+          ( (> (car l) e) (greatest (cdr l) (car l)))
+          (else (greatest (cdr l) e))))
+
+; this program is for EOPL 1.17 2
+(define (sorti l)
+  (cond ( (null? l) '())
+        ( else (cons (smallest l (car l))
+                     (sorti (remove l (smallest l (car l))))))))
+
+(define (sortd l)
+  (cond ( (null? l) '())
+        ( else (cons (greatest l (car l))
+                     (sortd (remove l (greatest l (car l))))))))
+
+(define (sort predicate l)
+  (cond ( (null? l) '())
+        ( (eq? predicate '>) (sortd l))
+        ( (eq? predicate '<) (sorti l))
+        (else (display "unrecognized predicate"))))
+           
